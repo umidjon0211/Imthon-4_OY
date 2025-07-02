@@ -6,7 +6,13 @@ export class RedisService implements OnModuleInit {
   private client: Redis;
 
   async onModuleInit() {
-    this.client = new Redis(); 
+    this.client = new Redis(process.env.REDIS_URL); 
+    this.client.on('connect', () => {
+      console.log('✅ Redis connected successfully');
+    });
+    this.client.on('error', (err) => {
+      console.error('❌ Redis connection error:', err);
+    });
   }
 
   async set(key: string, value: string, seconds: number) {
